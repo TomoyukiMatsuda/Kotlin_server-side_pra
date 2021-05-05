@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>ユーザー一覧</title>
+</head>
+<body>
+  <h1>ユーザー一覧</h1>
+  <input type="button" onclick="location.href='/add'" value="追加ページ">
+  <ul>
+    <li th:each="user : ${users}">[[${user.name}]]</li>
+  </ul>
+</body>
+</html>
