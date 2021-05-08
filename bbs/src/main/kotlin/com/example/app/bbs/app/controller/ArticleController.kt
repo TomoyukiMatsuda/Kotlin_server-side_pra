@@ -77,4 +77,36 @@ class ArticleController {
         articleRepository.save(article)
         return "redirect:/"
     }
+
+    @GetMapping("/delete/confirm/{id}")
+    fun articleDeleteConfirm(@PathVariable id: Int, model: Model): String {
+
+        return if (articleRepository.existsById(id)) {
+
+            model.addAttribute("article", articleRepository.findById(id).get())
+
+            "delete_confirm"
+        } else {
+            "redirect:/"
+        }
+    }
+
+    @PostMapping("/delete")
+    fun deleteArticle(articleRequest: ArticleRequest): String {
+        if (!articleRepository.existsById(articleRequest.id)) {
+            // id の投稿が存在しない時
+            return "redirect:/"
+        }
+
+        // id から投稿を取得
+        val article = articleRepository.findById(articleRequest.id).get()
+
+        if (articleRequest.articleKey != article.articleKey) {
+            // key が一致しない時
+            return "redirect:/delete/confirm/${article.id}"
+        }
+
+        articleRepository.deleteById(articleRequest.id)
+        return "redirect:/"
+    }
 }
