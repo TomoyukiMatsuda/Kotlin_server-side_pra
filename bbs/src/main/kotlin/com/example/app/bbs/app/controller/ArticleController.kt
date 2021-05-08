@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
+import java.util.*
 
 @Controller
 class ArticleController {
@@ -52,5 +53,28 @@ class ArticleController {
             // 引数idをもつ投稿がなければ
             "redirect:/"
         }
+    }
+
+    @PostMapping("/update")
+    fun updateArticle(articleRequest: ArticleRequest): String {
+        if (!articleRepository.existsById(articleRequest.id)) {
+            // id の投稿が存在しない時
+            return "redirect:/"
+        }
+
+        val article = articleRepository.findById(articleRequest.id).get()
+
+        if (articleRequest.articleKey != article.articleKey) {
+            // articleKeyが一致しない時
+            return "redirect:/edit/${articleRequest.id}"
+        }
+
+        article.name = articleRequest.name
+        article.title = articleRequest.title
+        article.contents = articleRequest.contents
+        article.updateAt = Date()
+
+        articleRepository.save(article)
+        return "redirect:/"
     }
 }
