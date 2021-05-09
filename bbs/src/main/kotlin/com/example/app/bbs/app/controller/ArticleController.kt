@@ -6,6 +6,8 @@ import com.example.app.bbs.domain.repository.ArticleRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
+import org.springframework.validation.BindingResult
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
 import java.util.*
@@ -26,7 +28,21 @@ class ArticleController {
 
     // 新規投稿
     @PostMapping("/")
-    fun registerArticle(@ModelAttribute articleRequest: ArticleRequest, redirectAttributes: RedirectAttributes): String {
+    fun registerArticle(@Validated @ModelAttribute articleRequest: ArticleRequest,
+                        result: BindingResult,
+                        redirectAttributes: RedirectAttributes): String {
+        // @Validated：バリデーションすることを宣言
+        // result: BindingResultでバリデーションの結果を受け取る（必ずバリデーションしたいパラメータの次の引数にする、この順番で無いとバリデーション正しくされない
+
+        if (result.hasErrors()) {
+            // バリデーション結果にエラーがあったら
+            redirectAttributes.addFlashAttribute("errors", result)
+            redirectAttributes.addFlashAttribute("request", articleRequest)
+
+            return "redirect:/"
+        }
+
+
         // @ModelAttribute：引数で指定すると対象の引数をリクエストパラメータと紐付けできる（name,titleなどにアクセスできる
         articleRepository.save(
                 Article(
@@ -46,7 +62,18 @@ class ArticleController {
 
     // 一覧表示
     @GetMapping("/")
-    fun getArticleList(model: Model): String {
+    fun getArticleList(@ModelAttribute articleRequest: ArticleRequest, model: Model): String {
+        if (model.containsAttribute("errors")) {
+            // registerArticle() でセットされた「errors」があったら
+            val key: String = BindingResult.MODEL_KEY_PREFIX + "articleRequest"
+            model.addAttribute(key, model.asMap()["errors"])
+        }
+
+        if (model.containsAttribute("request")) {
+            // registerArticle() でセットされた「request」があったら属性をセットし直している？
+            model.addAttribute("articleRequest", model.asMap()["request"])
+        }
+
         model.addAttribute("articles", articleRepository.findAll())
         // viewファイル名を返す
         return "index"
