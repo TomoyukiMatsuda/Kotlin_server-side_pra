@@ -38,6 +38,8 @@ class articleControllerTests {
         )
                 .andExpect(status().is3xxRedirection) // リダイレクトを促すレスポンスコード
                 .andExpect(view().name("redirect:/"))
+                .andExpect(flash().attributeExists("message"))
+                .andExpect(flash().attribute("message", target.MESSAGE_REGISTER_NORMAL))
 
                 //.andExpect(content().string("Saved")) // レスポンスの中身が「Saved」
     }

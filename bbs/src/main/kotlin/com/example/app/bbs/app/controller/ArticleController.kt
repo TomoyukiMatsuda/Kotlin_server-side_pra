@@ -7,17 +7,26 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.servlet.mvc.support.RedirectAttributes
 import java.util.*
 
 @Controller
 class ArticleController {
+
+    val MESSAGE_REGISTER_NORMAL = "正常に投稿できました。"
+    val MESSAGE_ARTICLE_DOES_NOT_EXISTS = "対象の記事が見つかりませんでした。"
+    val MESSAGE_UPDATE_NORMAL = "正常に更新しました。"
+    val MESSAGE_ARTICLE_KEY_UNMATCH = "投稿KEYが一致しません。"
+    val MESSAGE_DELETE_NORMAL = "正常に削除しました。"
+    val ALERT_CLASS_ERROR = "alert-error"
+
     // 依存性注入
     @Autowired
     lateinit var articleRepository: ArticleRepository
 
     // 新規投稿
     @PostMapping("/")
-    fun registerArticle(@ModelAttribute articleRequest: ArticleRequest): String {
+    fun registerArticle(@ModelAttribute articleRequest: ArticleRequest, redirectAttributes: RedirectAttributes): String {
         // @ModelAttribute：引数で指定すると対象の引数をリクエストパラメータと紐付けできる（name,titleなどにアクセスできる
         articleRepository.save(
                 Article(
@@ -28,6 +37,9 @@ class ArticleController {
                         articleRequest.articleKey,
                 ),
         )
+        // addFlashAttribute(名前, データ) でデータをセットしている
+        redirectAttributes.addFlashAttribute("message", MESSAGE_REGISTER_NORMAL)
+
         // 「/」はリダイレクト先
         return "redirect:/"
     }
@@ -42,7 +54,10 @@ class ArticleController {
 
     // 投稿編集
     @GetMapping("/edit/{id}") // urlを指定しつつ{id}でリクエストパラメータを受け取る
-    fun getArticleEdit(@PathVariable id: Int, model: Model): String {
+    fun getArticleEdit(@PathVariable id: Int,
+                       model: Model,
+                       redirectAttributes: RedirectAttributes
+    ): String {
         // @PathVariable：@GetMapping("/edit/{id}") で指定したパスを受け取ることを宣言するアノテーション
         return if(articleRepository.existsById(id)) {
             // 引数idをもつ投稿があれば 投稿データを取得
@@ -51,14 +66,23 @@ class ArticleController {
             "edit"
         } else {
             // 引数idをもつ投稿がなければ
+            redirectAttributes.addFlashAttribute("message",
+                    MESSAGE_ARTICLE_DOES_NOT_EXISTS)
+            redirectAttributes.addFlashAttribute("alert_class",
+                    ALERT_CLASS_ERROR)
+
             "redirect:/"
         }
     }
 
     @PostMapping("/update")
-    fun updateArticle(articleRequest: ArticleRequest): String {
+    fun updateArticle(articleRequest: ArticleRequest, redirectAttributes: RedirectAttributes): String {
         if (!articleRepository.existsById(articleRequest.id)) {
             // id の投稿が存在しない時
+            redirectAttributes.addFlashAttribute("message",
+                    MESSAGE_ARTICLE_DOES_NOT_EXISTS)
+            redirectAttributes.addFlashAttribute("alert_class",
+                    ALERT_CLASS_ERROR)
             return "redirect:/"
         }
 
@@ -66,6 +90,10 @@ class ArticleController {
 
         if (articleRequest.articleKey != article.articleKey) {
             // articleKeyが一致しない時
+            redirectAttributes.addFlashAttribute("message",
+                    MESSAGE_ARTICLE_KEY_UNMATCH)
+            redirectAttributes.addFlashAttribute("alert_class",
+                    ALERT_CLASS_ERROR)
             return "redirect:/edit/${articleRequest.id}"
         }
 
@@ -75,11 +103,18 @@ class ArticleController {
         article.updateAt = Date()
 
         articleRepository.save(article)
+
+        redirectAttributes.addFlashAttribute("message",
+                MESSAGE_UPDATE_NORMAL)
+
         return "redirect:/"
     }
 
     @GetMapping("/delete/confirm/{id}")
-    fun articleDeleteConfirm(@PathVariable id: Int, model: Model): String {
+    fun articleDeleteConfirm(@PathVariable id: Int,
+                             model: Model,
+                             redirectAttributes: RedirectAttributes
+    ): String {
 
         return if (articleRepository.existsById(id)) {
 
@@ -87,14 +122,23 @@ class ArticleController {
 
             "delete_confirm"
         } else {
+            redirectAttributes.addFlashAttribute("message",
+                    MESSAGE_ARTICLE_DOES_NOT_EXISTS)
+            redirectAttributes.addFlashAttribute("alert_class",
+                    ALERT_CLASS_ERROR)
             "redirect:/"
         }
     }
 
     @PostMapping("/delete")
-    fun deleteArticle(articleRequest: ArticleRequest): String {
+    fun deleteArticle(articleRequest: ArticleRequest, redirectAttributes: RedirectAttributes): String {
         if (!articleRepository.existsById(articleRequest.id)) {
             // id の投稿が存在しない時
+            redirectAttributes.addFlashAttribute("message",
+                    MESSAGE_ARTICLE_DOES_NOT_EXISTS)
+            redirectAttributes.addFlashAttribute("alert_class",
+                    ALERT_CLASS_ERROR)
+
             return "redirect:/"
         }
 
@@ -103,10 +147,17 @@ class ArticleController {
 
         if (articleRequest.articleKey != article.articleKey) {
             // key が一致しない時
+            redirectAttributes.addFlashAttribute("message",
+                    MESSAGE_ARTICLE_KEY_UNMATCH)
+            redirectAttributes.addFlashAttribute("alert_class",
+                    ALERT_CLASS_ERROR)
             return "redirect:/delete/confirm/${article.id}"
         }
 
         articleRepository.deleteById(articleRequest.id)
+        redirectAttributes.addFlashAttribute("message",
+                    MESSAGE_DELETE_NORMAL)
+
         return "redirect:/"
     }
 }
