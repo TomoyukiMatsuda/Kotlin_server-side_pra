@@ -28,7 +28,7 @@ class BbsAdminWebSecurityConfig : WebSecurityConfigurerAdapter() {
     override fun configure(auth: AuthenticationManagerBuilder) {
         auth.inMemoryAuthentication()
             .withUser("admin")
-            .password(passwordEncoder.encode(ADMIN_USER_PASSWORD))
+            .password("\$2a\$10\$nTUB9h5AaM8U0hoSrXMUyOSK1UCjg0IHMoZl2tLhf9K00YfUocSf.")
             .authorities(ADMIN_AUTHORITIES)
     }
 }
