@@ -2,6 +2,7 @@ package com.example.app.bbs.config
 
 import com.example.app.bbs.ADMIN_AUTHORITIES
 import com.example.app.bbs.ADMIN_USER_PASSWORD
+import com.example.app.bbs.app.service.UserDetailsServiceImpl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -16,8 +17,11 @@ import org.springframework.security.crypto.password.PasswordEncoder
 @EnableWebSecurity
 class BbsAdminWebSecurityConfig : WebSecurityConfigurerAdapter() {
 
+    //    @Autowired
+    //    lateinit var passwordEncoder: PasswordEncoder
+
     @Autowired
-    lateinit var passwordEncoder: PasswordEncoder
+    lateinit var userDetailsService: UserDetailsServiceImpl
 
     @Bean
     fun passwordEncoder(): PasswordEncoder {
@@ -26,9 +30,13 @@ class BbsAdminWebSecurityConfig : WebSecurityConfigurerAdapter() {
     }
 
     override fun configure(auth: AuthenticationManagerBuilder) {
-        auth.inMemoryAuthentication()
-            .withUser("admin")
-            .password("\$2a\$10\$nTUB9h5AaM8U0hoSrXMUyOSK1UCjg0IHMoZl2tLhf9K00YfUocSf.")
-            .authorities(ADMIN_AUTHORITIES)
+//        auth.inMemoryAuthentication()
+//            .withUser("admin")
+//            .password(passwordEncoder.encode(ADMIN_USER_PASSWORD))
+//            .authorities(ADMIN_AUTHORITIES)
+//
+//        println(passwordEncoder.encode(ADMIN_USER_PASSWORD))
+
+        auth.userDetailsService(userDetailsService)
     }
 }
