@@ -34,9 +34,9 @@ class BbsAdminWebSecurityConfig : WebSecurityConfigurerAdapter() {
     }
 
     // WebSecurity：セキュリティを無視する設定を指定する
-    override fun configure(web: WebSecurity?) {
+    override fun configure(web: WebSecurity) {
         // このように設定した物はセキュリティ設定を無視される
-        web?.ignoring()?.antMatchers(
+        web.ignoring().antMatchers(
             "/favicon.ico",
             "/css/**",
             "/js/**"
@@ -44,8 +44,7 @@ class BbsAdminWebSecurityConfig : WebSecurityConfigurerAdapter() {
     }
 
     // HttpSecurity：特定の http 要求に対してセキュリティの設定を行う
-    override fun configure(http: HttpSecurity?) {
-        http ?: return
+    override fun configure(http: HttpSecurity) {
         // 許可の設定 「/admin」 と 「/admin/」配下は認証が必要
         // それ以外は全てアクセス許可
         http.authorizeRequests()
@@ -57,8 +56,8 @@ class BbsAdminWebSecurityConfig : WebSecurityConfigurerAdapter() {
 
         // ログアウト
         http.logout()
-            .logoutRequestMatcher(AntPathRequestMatcher("/user/logout**"))
-            .logoutSuccessUrl("/")
+            .logoutRequestMatcher(AntPathRequestMatcher("/admin/logout**")) // adminログアウトのurl
+            .logoutSuccessUrl("/") // ログアウト成功時に遷移するpath
     }
 
     override fun configure(auth: AuthenticationManagerBuilder) {
@@ -68,6 +67,6 @@ class BbsAdminWebSecurityConfig : WebSecurityConfigurerAdapter() {
             .password("\$2a\$10\$zkWc793o2fA1eHIDpudpKuCY9HBhWIz2dSTvvERSdsajfq7uybja2")
             .authorities("ROLE_ADMIN")
 
-        auth.userDetailsService(userDetailsService)
+        // auth.userDetailsService(userDetailsService)
     }
 }
