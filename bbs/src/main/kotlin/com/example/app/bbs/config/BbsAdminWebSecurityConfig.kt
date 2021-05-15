@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
+import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -17,8 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder
 @EnableWebSecurity
 class BbsAdminWebSecurityConfig : WebSecurityConfigurerAdapter() {
 
-    //    @Autowired
-    //    lateinit var passwordEncoder: PasswordEncoder
+    @Autowired
+    lateinit var passwordEncoder: PasswordEncoder
 
     @Autowired
     lateinit var userDetailsService: UserDetailsServiceImpl
@@ -30,12 +32,11 @@ class BbsAdminWebSecurityConfig : WebSecurityConfigurerAdapter() {
     }
 
     override fun configure(auth: AuthenticationManagerBuilder) {
-//        auth.inMemoryAuthentication()
-//            .withUser("admin")
-//            .password(passwordEncoder.encode(ADMIN_USER_PASSWORD))
-//            .authorities(ADMIN_AUTHORITIES)
-//
-//        println(passwordEncoder.encode(ADMIN_USER_PASSWORD))
+        // TODO: DBからユーザー情報読み出すのがうまくいかない
+        auth.inMemoryAuthentication()
+            .withUser("admin")
+            .password("\$2a\$10\$zkWc793o2fA1eHIDpudpKuCY9HBhWIz2dSTvvERSdsajfq7uybja2")
+            .authorities("ROLE_ADMIN")
 
         auth.userDetailsService(userDetailsService)
     }
