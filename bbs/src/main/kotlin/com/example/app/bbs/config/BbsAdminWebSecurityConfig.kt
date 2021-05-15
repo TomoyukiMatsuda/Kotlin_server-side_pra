@@ -13,6 +13,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher
+import org.springframework.util.AntPathMatcher
 
 // クラス継承時の () はコンストラクタを呼び出すという指定：WebSecurityConfigurerAdapter()
 @Configuration
@@ -29,6 +31,34 @@ class BbsAdminWebSecurityConfig : WebSecurityConfigurerAdapter() {
     fun passwordEncoder(): PasswordEncoder {
         // PasswordEncoder：パスワードを安全に処理するためにハッシュ化する仕組み
         return BCryptPasswordEncoder()
+    }
+
+    // WebSecurity：セキュリティを無視する設定を指定する
+    override fun configure(web: WebSecurity?) {
+        // このように設定した物はセキュリティ設定を無視される
+        web?.ignoring()?.antMatchers(
+            "/favicon.ico",
+            "/css/**",
+            "/js/**"
+        )
+    }
+
+    // HttpSecurity：特定の http 要求に対してセキュリティの設定を行う
+    override fun configure(http: HttpSecurity?) {
+        http ?: return
+        // 許可の設定 「/admin」 と 「/admin/」配下は認証が必要
+        // それ以外は全てアクセス許可
+        http.authorizeRequests()
+                .antMatchers("/admin", "/admin/*").authenticated()
+                .anyRequest().permitAll()
+
+        // ログイン設定（デフォルトの設定を用いる）
+        http.formLogin()
+
+        // ログアウト
+        http.logout()
+            .logoutRequestMatcher(AntPathRequestMatcher("/user/logout**"))
+            .logoutSuccessUrl("/")
     }
 
     override fun configure(auth: AuthenticationManagerBuilder) {
