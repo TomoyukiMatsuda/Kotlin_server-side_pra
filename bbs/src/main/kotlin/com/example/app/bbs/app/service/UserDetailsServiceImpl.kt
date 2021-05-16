@@ -21,6 +21,7 @@ class UserDetailsServiceImpl : UserDetailsService { // UserDetailsService：ユ�
         var user: User? = null
         if (username != null) {
             user = userRepository.findByName(username)
+            user?.equals(username)
         }
 
         if (user == null) {

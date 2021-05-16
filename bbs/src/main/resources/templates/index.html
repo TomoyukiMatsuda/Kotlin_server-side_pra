@@ -58,27 +58,12 @@
         </form>
     </div>
 
-    <div class="Area_articles" th:each="article:${articles}" th:object="${article}">
-        <div>
-            <table border="1" class="Area_articles_table">
-                <tr class="Area_article_title">
-                    <td>
-                        <label>
-                            <input type="radio" name="article_check" th:text="*{id}+'.'+*{title}" th:data-id="*{id}" />
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td th:text="'名前：' + *{name}"></td>
-                </tr>
-                <tr>
-                    <td>
-                        <pre th:text="*{contents}"></pre>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div>
+
+    <div class="border_line"></div>
+
+    <span th:replace="fragments/articles :: fragment-articles"></span>
+
+    <span th:replace="fragments/paging :: fragment-article-paging"></span>
 
     <div class="Area_change_article">
         <form th:action="@{/}" th:method="get" name="form_change_article">
@@ -86,6 +71,5 @@
             <button type="button" onclick="changeArticleSubmit('delete')">削除</button>
         </form>
     </div>
-
 </body>
 </html>
