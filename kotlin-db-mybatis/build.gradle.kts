@@ -29,7 +29,8 @@ tasks.withType<KotlinCompile>() {
     kotlinOptions.jvmTarget = "1.8"
 }
 
-// TODO: ./gradlew mbGenerator ができない、失敗する
+// TODO: ./gradlew mbGenerator ができない、失敗する。Gradle のバージョン？？
+//  122,123ページから！
 mybatisGenerator {
     verbose = true
     configFile = "${projectDir}/src/main/resources/generatorConfig.xml"
