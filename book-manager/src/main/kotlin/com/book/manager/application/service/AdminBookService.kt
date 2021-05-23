@@ -25,8 +25,11 @@ class AdminBookService(
         bookRepository.findWithRental(bookId) ?: throw IllegalAccessException("存在しない書籍ID: $bookId")
         bookRepository.update(bookId, title, author, releaseDate)
     }
-}
 
-fun main() {
-
+    @Transactional
+    fun delete(bookId: Long) {
+        // 該当bookIdが存在しなければ、例外を投げてロールバックする
+        bookRepository.findWithRental(bookId) ?: throw IllegalAccessException("存在しない書籍ID: $bookId")
+        bookRepository.delete(bookId)
+    }
 }
