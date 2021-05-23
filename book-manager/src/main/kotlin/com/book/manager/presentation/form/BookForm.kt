@@ -15,7 +15,7 @@ data class BookInfo(
     val author: String,
     val isRental: Boolean
 ) {
-    // this はプライマリコンストラクタを指しており、呼んでいる。セカンダリコンストラクタ は最終的に必ずプライマリコンストラクタを呼び出す必要がある
+    // 今回のthis はプライマリコンストラクタを指しており、呼んでいる。セカンダリコンストラクタ は最終的に必ずプライマリコンストラクタを呼び出す必要がある
     constructor(model: BookWithRental) : this(model.book.id, model.book.title, model.book.author, model.isRental)
 }
 
@@ -42,3 +42,19 @@ data class RentalInfo(
 ) {
     constructor(rental: Rental) : this(rental.userId, rental.rentalDateTime, rental.returnDeadline)
 }
+
+// 書籍登録のリクエスト
+data class RegisterBookRequest(
+    val id: Long,
+    val title: String,
+    val author: String,
+    val releaseDate: LocalDate
+)
+
+// 書籍データ更新処理のリクエスト
+data class UpdateBookRequest(
+    val id: Long,
+    val title: String?,
+    val author: String?,
+    val releaseDate: LocalDate?
+)

@@ -29,6 +29,7 @@ fun BookWithRentalMapper.select(): List<BookWithRentalRecord> {
             on(Book.id, equalTo(Rental.bookId))
         }
     }
+    // 書籍レンタル情報のレコードのリストを返している
     return selectMany(selectStatement)
 }
 
@@ -39,5 +40,6 @@ fun BookWithRentalMapper.selectByPrimaryKey(id_: Long): BookWithRentalRecord? {
         }
         where(id, isEqualTo(id_))
     }
+    // 書籍レンタル情報のレコードを返している
     return selectOne(selectStatement)
 }
