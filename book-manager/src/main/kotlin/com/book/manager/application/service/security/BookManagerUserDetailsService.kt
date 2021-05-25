@@ -46,8 +46,8 @@ data class BookManagerUserDetails(val id: Long, val email: String, val pass: Str
     }
 
     override fun getPassword(): String {
+        // TODO: ログイン失敗する　パスワードは間違ってなさそうだけど認証に失敗する
         // ログイン時に入力したパスワードとの比較に仕様される
-        // TODO: null で何回も呼ばれている？？ 「P197 認証、認可の動作確認」　から
         return this.pass
     }
 
