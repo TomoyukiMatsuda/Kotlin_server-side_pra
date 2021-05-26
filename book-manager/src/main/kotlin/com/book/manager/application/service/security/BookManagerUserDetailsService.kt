@@ -7,11 +7,13 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import java.util.*
 
 class BookManagerUserDetailsService(
     private val authenticationService: AuthenticationService // コンストラクタインジェクション
 ) : UserDetailsService {
+
+    // TODO: P201 セッション情報の保存をRedisへ変更 ~ 開始！！
 
     /**
     ① 入力したユーザー名、パスワードをパラメータにログインAPIを実行
