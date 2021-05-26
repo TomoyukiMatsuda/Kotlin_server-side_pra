@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 class BookManagerUserDetailsService(
     private val authenticationService: AuthenticationService // コンストラクタインジェクション
@@ -46,8 +47,6 @@ data class BookManagerUserDetails(val id: Long, val email: String, val pass: Str
     }
 
     override fun getPassword(): String {
-        // TODO: ログイン失敗する　パスワードは間違ってなさそうだけど認証に失敗する
-        // ログイン時に入力したパスワードとの比較に仕様される
         return this.pass
     }
 

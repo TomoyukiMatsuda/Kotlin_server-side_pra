@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
@@ -41,6 +42,8 @@ class SecurityConfig(private val authenticationService: AuthenticationService) :
     }
 
     override fun configure(auth: AuthenticationManagerBuilder) {
+        // DB登録する際の password の文字数注意と登録時に BCrypt 化できていないと エラーになる
+        // Encoded password does not look like BCrypt：暗号化されたパスワードがBCryptのように見えない（DB登録ユーザーのpasswordがBCrypt化されてない？）
         auth.userDetailsService(BookManagerUserDetailsService(authenticationService)) // 認証処理を実行するクラスの指定
             .passwordEncoder(BCryptPasswordEncoder()) // パスワードの暗号化アルゴリズムをBCryptに指定
     }
