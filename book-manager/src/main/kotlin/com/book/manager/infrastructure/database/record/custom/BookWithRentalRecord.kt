@@ -9,6 +9,6 @@ data class BookWithRentalRecord(
     var author: String? = null,
     var releaseDate: LocalDate? = null,
     var userId: Long? = null,
-    var rentalDateTime: LocalDateTime? = null,
+    var rentalDatetime: LocalDateTime? = null,
     var returnDeadline: LocalDateTime? = null
 )

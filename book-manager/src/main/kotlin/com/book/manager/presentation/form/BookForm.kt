@@ -40,7 +40,7 @@ data class RentalInfo(
     val rentalDatetime: LocalDateTime,
     val returnDeadline: LocalDateTime
 ) {
-    constructor(rental: Rental) : this(rental.userId, rental.rentalDateTime, rental.returnDeadline)
+    constructor(rental: Rental) : this(rental.userId, rental.rentalDatetime, rental.returnDeadline)
 }
 
 // 書籍登録のリクエスト

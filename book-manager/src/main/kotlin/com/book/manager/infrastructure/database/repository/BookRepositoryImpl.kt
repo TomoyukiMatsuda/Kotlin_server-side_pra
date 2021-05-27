@@ -69,7 +69,7 @@ class BookRepositoryImpl(
             Rental(
                 record.id,
                 record.userId!!,
-                record.rentalDateTime!!,
+                record.rentalDatetime!!,
                 record.returnDeadline!!
             )
         }

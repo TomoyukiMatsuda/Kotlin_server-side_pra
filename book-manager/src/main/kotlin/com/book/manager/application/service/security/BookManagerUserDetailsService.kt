@@ -31,7 +31,7 @@ class BookManagerUserDetailsService(
     }
 }
 
-// ログイン時に入力した値から取得したユーザーデータを格納し、認証処理で仕様されるものになる
+// ログイン時に入力した値から取得したユーザーデータを格納し、認証処理で利用されるものになる
 data class BookManagerUserDetails(val id: Long, val email: String, val pass: String, val roleType: RoleType) : UserDetails {
     constructor(user: User) : this(user.id, user.email, user.password, user.roleType)
 
