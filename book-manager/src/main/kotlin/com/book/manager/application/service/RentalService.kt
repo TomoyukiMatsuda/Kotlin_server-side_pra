@@ -33,4 +33,16 @@ class RentalService(
         // レンタル開始処理
         rentalRepository.startRental(rental)
     }
+
+    @Transactional
+    fun endRental(bookId: Long, userId: Long) {
+        userRepository.find(userId) ?: throw IllegalAccessException("該当するユーザーが存在しないユーザーIDです $userId")
+        val book = bookRepository.findWithRental(bookId) ?: throw IllegalAccessException("存在しない書籍ID： $bookId")
+
+        // 貸出中かどうかのチェック
+        if (!book.isRental) throw IllegalAccessException("${book.book.title} は未貸出（レンタル可能）です")
+        if (book.rental?.userId != userId) throw IllegalAccessException("${book.book.title} は他のユーザーがレンタル中です")
+
+        rentalRepository.endRental(bookId)
+    }
 }

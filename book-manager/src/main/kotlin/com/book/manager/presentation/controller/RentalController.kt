@@ -20,4 +20,11 @@ class RentalController(
         val user = SecurityContextHolder.getContext().authentication.principal as BookManagerUserDetails
         rentalService.startRental(request.bookId, user.id)
     }
+
+    @DeleteMapping("/end/{book_id}")
+    fun endRental(@PathVariable("book_id") bookId: Long) {
+        // 認証ユーザーを取得
+        val user = SecurityContextHolder.getContext().authentication.principal as BookManagerUserDetails
+        rentalService.endRental(bookId, user.id)
+    }
 }
